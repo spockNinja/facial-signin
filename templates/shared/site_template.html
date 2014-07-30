@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/global/bootstrap.min.css') }}">
+        {% block page_css %}{% endblock %}
+    </head>
+
+    <body>
+        <script>
+            var Data = {};
+        </script>
+        {% block page_data %}{% endblock %}
+
+        {% block content %}{% endblock %}
+
+        <script src="{{ url_for('static', filename='js/global/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/global/bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/global/knockout.min.js') }}"></script>
+        {% block page_js %}{% endblock %}
+    </body>
+</html>
