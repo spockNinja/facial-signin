@@ -19,6 +19,3 @@ def close_db_session(error):
     """ Make sure the database connection closes after each request"""
     db.session.commit()
     db.session.close()
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0')

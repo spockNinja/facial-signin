@@ -10,10 +10,15 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from utils import uuid
 
-DB_URL = os.environ.get('DATABASE_URL', 'postgresql+psycopg2://username:password@host:port/dbName')
+# Heroku gives us the db url in an ENV variable
+# Make sure you change the default to something secure before using it
+DB_URL = os.environ.get('DATABASE_URL', 'postgresql://username:password@host:port/dbName')
+DRIVER = '+psycopg2:'
 
-# Make sure you change this to something secure before using it
-engine = create_engine(DB_URL, convert_unicode=True)
+db_url_parts = DB_URL.split(':', 1)
+FULL_DB_URL = db_url_parts[0] + DRIVER + db_url_parts[1]
+
+engine = create_engine(FULL_DB_URL, convert_unicode=True)
 session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
 
 Base = declarative_base()
