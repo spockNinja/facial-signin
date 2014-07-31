@@ -9,15 +9,13 @@ from sqlalchemy.ext.declarative import declarative_base
 from utils import uuid
 
 # Make sure you change this to something secure before using it
-engine = create_engine('postgresql+pypostgresql://user:password@host:port/dbname', convert_unicode=True)
+engine = create_engine('postgresql+psycopg2://username:password@host:port/dbName', convert_unicode=True)
 session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
 
 Base = declarative_base()
 
-
 def init_db():
-    import models
-    Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(engine)
 
 class MyBase(object):
     """ Our Mixin class for defining declarative table models
