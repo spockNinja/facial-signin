@@ -2,14 +2,18 @@
     This file controls all DB setup and session logic.
 """
 
+import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 from utils import uuid
 
+DB_URL = os.environ.get('DATABASE_URL', 'postgresql+psycopg2://username:password@host:port/dbName')
+
 # Make sure you change this to something secure before using it
-engine = create_engine('postgresql+psycopg2://username:password@host:port/dbName', convert_unicode=True)
+engine = create_engine(DB_URL, convert_unicode=True)
 session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
 
 Base = declarative_base()
