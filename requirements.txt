@@ -4,3 +4,5 @@ Werkzeug==0.8.3
 gunicorn==0.17.2
 SQLAlchemy==0.9.7
 psycopg2==2.5.3
+python-postmark==0.4.3
+hashlib==20081119
