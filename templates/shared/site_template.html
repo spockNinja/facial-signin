@@ -12,6 +12,27 @@
         </script>
         {% block page_data %}{% endblock %}
 
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">App Name!</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        {% block navigation %}{% endblock %}
+                    </ul>
+                    {% block nav_extras %}{% endblock %}
+                </div>
+            </div>
+        </nav>
+
         {% block content %}{% endblock %}
 
         <script src="{{ url_for('static', filename='js/global/jquery.min.js') }}"></script>

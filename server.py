@@ -1,6 +1,6 @@
 import sys
 import os
-from flask import Flask, render_template, json
+from flask import Flask, json, render_template, request, session
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
@@ -9,13 +9,19 @@ import db
 app = Flask(__name__)
 app.debug = True
 
+
 @app.route("/")
 def index():
     return render_template('index.html')
 
+
 @app.route("/gateway")
 def gateway():
-    """ Handles basic json requests """
+    """ Handles basic json requests.
+        User must be logged in for access. """
+
+    if not session.get('loggedIn'):
+        raise UserWarning("Not Authenticated")
 
     # First we make sure file and method have been specified
     req_file = request.args.get('file')
@@ -36,6 +42,18 @@ def gateway():
 
     else:
         raise UserWarning("You must provide a file and method for the gateway")
+
+
+@app.route("/external/<method>", methods=['POST'])
+def external(method=None):
+    """ Handles functions that do not require authentication. """
+
+    try:
+        method = __import__("external."+method)
+    except ImportError:
+        raise UserWarning("No external function: " + method)
+
+    return json.dumps(method(request.args))
 
 
 @app.teardown_appcontext

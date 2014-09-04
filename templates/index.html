@@ -1,9 +1,31 @@
 {% extends "/shared/site_template.html" %}
 {% block title %}Index{% endblock %}
 
+{% block page_js %}
+    <script src="{{ url_for('static', filename='js/external/login.js') }}"></script>
+{% endblock %}
+
+{% block nav_extras %}
+    <form class="navbar-form navbar-right" role="login">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Username" data-bind="value: username">
+            <input type="password" class="form-control" placeholder="Password" data-bind="value: password">
+        </div>
+        <button type="button" class="btn btn-default" data-bind="click: login">Login</button>
+     </form>
+{% endblock %}
+
 {% block content %}
     <div class="jumbotron">
         <h1>Welcome!</h1>
-        <p>This is the template index!</p>
+        <p>This is the template index! New? Register!</p>
+        <form role="register">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Username" data-bind="value: username">
+                <input type="password" class="form-control" placeholder="Password" data-bind="value: password">
+                <input type="text" class="form-control" placeholder="Email" data-bind="value: email">
+            </div>
+            <button type="button" class="btn btn-default" data-bind="click: register">Register</button>
+        </form>
     </div>
 {% endblock %}
