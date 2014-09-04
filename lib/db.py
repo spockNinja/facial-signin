@@ -13,10 +13,10 @@ from utils import uuid
 # Heroku gives us the db url in an ENV variable
 # Make sure you change the default to something secure before using it
 DB_URL = os.environ.get('DATABASE_URL')
-DRIVER = '+psycopg2:'
+DRIVER = 'postgresql+psycopg2:'
 
 db_url_parts = DB_URL.split(':', 1)
-FULL_DB_URL = db_url_parts[0] + DRIVER + db_url_parts[1]
+FULL_DB_URL = DRIVER + db_url_parts[1]
 
 engine = create_engine(FULL_DB_URL, convert_unicode=True)
 session = scoped_session(sessionmaker(autocommit=False,
