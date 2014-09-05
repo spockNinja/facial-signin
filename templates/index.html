@@ -8,8 +8,8 @@
 {% block nav_extras %}
     <form class="navbar-form navbar-right" role="login">
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="Username" data-bind="value: username">
-            <input type="password" class="form-control" placeholder="Password" data-bind="value: password">
+            <input type="text" class="form-control" placeholder="Username" data-bind="value: loginUsername">
+            <input type="password" class="form-control" placeholder="Password" data-bind="value: loginPassword">
         </div>
         <button type="button" class="btn btn-default" data-bind="click: login">Login</button>
      </form>
@@ -21,9 +21,9 @@
         <p>This is the template index! New? Register!</p>
         <form role="register">
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="Username" data-bind="value: username">
-                <input type="password" class="form-control" placeholder="Password" data-bind="value: password">
-                <input type="text" class="form-control" placeholder="Email" data-bind="value: email">
+                <input type="text" class="form-control" placeholder="Username" data-bind="value: registerUsername">
+                <input type="password" class="form-control" placeholder="Password" data-bind="value: registerPassword">
+                <input type="text" class="form-control" placeholder="Email" data-bind="value: registerEmail">
             </div>
             <button type="button" class="btn btn-default" data-bind="click: register">Register</button>
         </form>
