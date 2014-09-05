@@ -30,11 +30,6 @@ class MyBase(object):
     """ Our Mixin class for defining declarative table models
         in SQLAlchemy. We use this class to define consistent table
         args, methods, etc."""
-    __table_args__ = {
-        'mysql_engine': 'InnoDB',
-        'mysql_charset': 'utf8',
-        'keep_existing': True
-    }
 
     def __init__(self, **kwargs):
         """ Override default __init__, if the mapper has an id
@@ -44,3 +39,10 @@ class MyBase(object):
 
         if hasattr(self, 'id') and not self.id:
             self.id = uuid()
+
+    def insert(self):
+        """Convenience method to add a model to the session
+        and ultimately insert in the database permanently upon commit."""
+        session.add(self)
+        session.merge(self)
+        return self.id
