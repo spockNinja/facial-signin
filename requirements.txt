@@ -1,6 +1,7 @@
 Flask==0.10.1
 gunicorn==19.1.0
 hashlib==20081119
+ipython==2.2.0
 Jinja2==2.7.3
 passlib==1.6.2
 psycopg2==2.5.3
