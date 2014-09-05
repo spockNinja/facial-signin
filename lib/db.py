@@ -26,17 +26,15 @@ session = scoped_session(sessionmaker(autocommit=False,
 Base = declarative_base()
 
 
-def init_db():
-    Base.metadata.create_all(engine)
-
-
 class MyBase(object):
     """ Our Mixin class for defining declarative table models
         in SQLAlchemy. We use this class to define consistent table
         args, methods, etc."""
-    __table_args__ = {'mysql_engine': 'InnoDB',
+    __table_args__ = {
+        'mysql_engine': 'InnoDB',
         'mysql_charset': 'utf8',
-        'keep_existing': True}
+        'keep_existing': True
+    }
 
     def __init__(self, **kwargs):
         """ Override default __init__, if the mapper has an id
