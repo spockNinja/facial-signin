@@ -1,8 +1,9 @@
 Flask==0.10.1
-Jinja2==2.7.3
-Werkzeug==0.9.6
 gunicorn==19.1.0
-psycopg2==2.5.3
-SQLAlchemy==0.9.7
-python-postmark==0.4.3
 hashlib==20081119
+Jinja2==2.7.3
+passlib==1.6.2
+psycopg2==2.5.3
+python-postmark==0.4.3
+SQLAlchemy==0.9.7
+Werkzeug==0.9.6
