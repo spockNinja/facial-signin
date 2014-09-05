@@ -5,6 +5,7 @@ from flask import Flask, json, render_template, request, session
 sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
 import db
+import external as external_methods
 
 app = Flask(__name__)
 app.debug = True
@@ -27,16 +28,19 @@ def gateway():
     req_file = request.args.get('file')
     req_method = request.args.get('method')
     if req_file and req_method:
-        import_str = "{0}.{1}".format(req_file, req_method)
         try:
-            method = __import__(import_str)
+            module = __import__(req_file)
         except ImportError:
-            raise UserWarning("Unable to import " + import_str)
+            raise UserWarning("Unable to import module: " + req_file)
 
         try:
             req_json = request.get_json(force=True)
         except:
             raise UserWarning("Unable to parse json request")
+
+        method = getattr(module, req_method)
+        if not method:
+            raise UserWarning("No method named: " + req_method)
 
         return json.dumps(method(req_json))
 
@@ -48,10 +52,10 @@ def gateway():
 def external(method=None):
     """ Handles functions that do not require authentication. """
 
-    try:
-        method = __import__("external."+method)
-    except ImportError:
-        raise UserWarning("No external function: " + method)
+    method = getattr(external_methods, method)
+
+    if not method:
+        raise UserWarning("No external method named: " + method)
 
     return json.dumps(method(request.args))
 
