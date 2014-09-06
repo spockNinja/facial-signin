@@ -48,7 +48,7 @@ def gateway():
         raise UserWarning("You must provide a file and method for the gateway")
 
 
-@app.route("/external/<method>", methods=['POST'])
+@app.route("/external/<method>", methods=['GET', 'POST'])
 def external(method=None):
     """ Handles functions that do not require authentication. """
 
@@ -57,7 +57,12 @@ def external(method=None):
     if not method:
         raise UserWarning("No external method named: " + method)
 
-    return json.dumps(method(request.args))
+    results = method(request.args)
+
+    if request.method == 'POST':
+        return json.dumps(results)
+    else:
+        return render_template(results)
 
 
 @app.teardown_appcontext
