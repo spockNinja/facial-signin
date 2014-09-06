@@ -28,7 +28,7 @@ def login(args):
                     'userId': user_match.id,
                     'loggedIn': True
                 })
-                return 'dashboard.html'
+                return resp()
             else:
                 return resp(False, 'Please confirm your registration before logging in')
         else:

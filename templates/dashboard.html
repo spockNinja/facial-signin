@@ -1,13 +1,9 @@
 {% extends "/shared/site_template.html" %}
 {% block title %}Dashboard{% endblock %}
 
-{% block page_js %}
-    <script src="{{ url_for('static', filename='js/internal/dashboard.js') }}"></script>
-{% endblock %}
-
 {% block nav_extras %}
     <div class="navbar-nav navbar-right">
-        <button type="button" class="btn btn-default" data-bind="click: logout">Logout</button>
+        <a href="/gateway?file=core&method=logout" class="btn btn-default">Logout</button>
     </div>
 {% endblock %}
 

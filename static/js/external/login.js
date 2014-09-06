@@ -9,6 +9,7 @@ app.login = {
 
     registerUsername: ko.observable(''),
     registerPassword: ko.observable(''),
+    registerConfirmPassword: ko.observable(''),
     registerEmail: ko.observable(''),
 
     login: function() {
@@ -17,7 +18,10 @@ app.login = {
         var loginUrl = '/external/login?username={loginUsername}&password={loginPassword}';
         $.post(loginUrl.format(ko.toJS(self)), function(response) {
             if (response.success) {
-                console.log('Woot, logged in');
+                window.location.href = '/dashboard.html';
+            }
+            else {
+                bootbox.alert(response.message);
             }
         });
     },
@@ -28,7 +32,10 @@ app.login = {
         var registerUrl = '/external/register?username={registerUsername}&password={registerPassword}&email={registerEmail}';
         $.post(registerUrl.format(ko.toJS(self)), function(response) {
             if (response.success) {
-                console.log('Woot, registered');
+                bootbox.alert("Thank you for registering. An email has been sent to you with a confirmation link inside.");
+            }
+            else {
+                bootbox.alert(response.message);
             }
         });
     }
