@@ -94,5 +94,4 @@ def verify(args):
 
     user.active = True
 
-    # TODO redirect to user homepage/landing
-    return resp()
+    return 'dashboard.html'
