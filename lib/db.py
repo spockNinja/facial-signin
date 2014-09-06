@@ -46,7 +46,6 @@ class MyBase(object):
         """Convenience method to add a model to the session
         and ultimately insert in the database permanently upon commit."""
         session.add(self)
-        session.merge(self)
         return self.id
 
 
