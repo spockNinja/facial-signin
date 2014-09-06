@@ -11,7 +11,7 @@
             <input type="text" class="form-control" placeholder="Username" data-bind="value: loginUsername">
             <input type="password" class="form-control" placeholder="Password" data-bind="value: loginPassword">
         </div>
-        <button type="button" class="btn btn-default" data-bind="click: login">Login</button>
+        <button type="button" class="btn btn-default" data-bind="click: login, enable: readyToLogin">Login</button>
      </form>
 {% endblock %}
 
@@ -19,13 +19,30 @@
     <div class="jumbotron">
         <h1>Welcome!</h1>
         <p>This is the template index! New? Register!</p>
-        <form role="register">
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="Username" data-bind="value: registerUsername">
-                <input type="password" class="form-control" placeholder="Password" data-bind="value: registerPassword">
-                <input type="text" class="form-control" placeholder="Email" data-bind="value: registerEmail">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Username" data-bind="value: registerUsername">
+                </div>
             </div>
-            <button type="button" class="btn btn-default" data-bind="click: register">Register</button>
-        </form>
+            <div class="col-sm-6">
+                <div class="form-group has-feedback">
+                    <input type="email" class="form-control" placeholder="Email" data-bind="value: registerEmail">
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <input type="password" class="form-control" placeholder="Password" data-bind="value: registerPassword">
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group has-feedback">
+                    <input type="password" class="form-control" placeholder="Confirm Password" data-bind="value: registerConfirmPassword">
+                </div>
+            </div>
+            <div class="center">
+                <button type="button" class="btn btn-large btn-success" data-bind="click: register, enable: readyToRegister">Register</button>
+            </div>
+        </div>
     </div>
 {% endblock %}

@@ -3,10 +3,17 @@
     <head>
         <title>{% block title %}{% endblock %}</title>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/global/bootstrap.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/global/app.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/global/font-awesome/css/font-awesome.css') }}">
         {% block page_css %}{% endblock %}
     </head>
 
     <body>
+        <script type="text/html" id="customValidationMessage">
+            <span class="form-control-feedback" data-bind="visible: field.error">
+                <i class="fa fa-exclamation-circle" data-bind="attr: { title: field.error }"></i>
+            </span>
+        </script>
         <script>
             var Data = {};
         </script>

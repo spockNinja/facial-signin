@@ -1,0 +1,62 @@
+@red: rgb(167, 35, 17);
+@yellow: rgb(189, 141, 38);
+@green: rgb(5, 151, 44);
+@blue: rgb(30, 135, 191);
+
+.validationElement,
+.validationElement:focus {
+    border-color: @red;
+    -webkit-box-shadow: 0 0 6px lighten(@red, 30%);
+       -mox-box-shadow: 0 0 6px lighten(@red, 30%);
+            box-shadow: 0 0 6px lighten(@red, 30%);
+}
+
+/* Utility Classes */
+.center {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    float: none;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.clickable {
+    cursor: pointer !important;
+}
+
+.no-padding {
+    padding: 0px !important;
+}
+
+.no-margin{
+    margin: 0px !important;
+}
+
+
+/* Spacer Classes */
+div[class*="spacer"] {
+    width: 100%;
+    font-size: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    display: block;
+}
+.spacer5 {
+    height: 5px;
+}
+.spacer10 {
+    height: 10px;
+}
+.spacer20 {
+    height: 20px;
+}
+.spacer50 {
+    height: 50px;
+}
+.spacer100 {
+    height: 100px;
+}

@@ -1,0 +1,50 @@
+.validationElement,
+.validationElement:focus {
+  border-color: #a72311;
+  -webkit-box-shadow: 0 0 6px #ef7362;
+  -mox-box-shadow: 0 0 6px #ef7362;
+  box-shadow: 0 0 6px #ef7362;
+}
+/* Utility Classes */
+.center {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  float: none;
+}
+.center-text {
+  text-align: center;
+}
+.clickable {
+  cursor: pointer !important;
+}
+.no-padding {
+  padding: 0px !important;
+}
+.no-margin {
+  margin: 0px !important;
+}
+/* Spacer Classes */
+div[class*="spacer"] {
+  width: 100%;
+  font-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: block;
+}
+.spacer5 {
+  height: 5px;
+}
+.spacer10 {
+  height: 10px;
+}
+.spacer20 {
+  height: 20px;
+}
+.spacer50 {
+  height: 50px;
+}
+.spacer100 {
+  height: 100px;
+}
