@@ -5,8 +5,9 @@
 import os
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 from utils import uuid
 
@@ -18,7 +19,8 @@ DRIVER = 'postgresql+psycopg2:'
 db_url_parts = DB_URL.split(':', 1)
 FULL_DB_URL = DRIVER + db_url_parts[1]
 
-engine = create_engine(FULL_DB_URL, convert_unicode=True)
+engine = create_engine(FULL_DB_URL, convert_unicode=True,
+                       isolation_level="SERIALIZABLE")
 session = scoped_session(sessionmaker(autocommit=False,
                                       autoflush=False,
                                       bind=engine))
@@ -46,3 +48,17 @@ class MyBase(object):
         session.add(self)
         session.merge(self)
         return self.id
+
+
+def safe_commit():
+    """ This commit function will rollback the transaction if
+        committing goes awry."""
+    from sqlalchemy.exc import InvalidRequestError
+
+    try:
+        session.commit()
+    except InvalidRequestError as exc:
+        print exc  # to the app log
+    except (StandardError, SQLAlchemyError):
+        session.rollback()
+        raise

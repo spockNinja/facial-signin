@@ -73,5 +73,5 @@ def external(method=None):
 @app.teardown_appcontext
 def close_db_session(error):
     """ Make sure the database connection closes after each request"""
-    db.session.commit()
+    db.safe_commit()
     db.session.close()
