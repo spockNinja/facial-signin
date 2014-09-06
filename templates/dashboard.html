@@ -1,0 +1,19 @@
+{% extends "/shared/site_template.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block page_js %}
+    <script src="{{ url_for('static', filename='js/internal/dashboard.js') }}"></script>
+{% endblock %}
+
+{% block nav_extras %}
+    <div class="navbar-nav navbar-right">
+        <button type="button" class="btn btn-default" data-bind="click: logout">Logout</button>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="jumbotron">
+        <h1>Welcome!</h1>
+        <p>This is the dashboard. There will be helpful info and links here!</p>
+    </div>
+{% endblock %}
