@@ -20,18 +20,19 @@ def login(args):
         encrypted_pass = sha256_crypt.encrypt(password)
         user_match = db.session.query(User)\
                                .filter(User.username == username)\
-                               .filter(User.password == encrypted_pass)\
-                               .filter(User.active == True).first()
+                               .filter(User.password == encrypted_pass).first()
         if user_match:
-            session.update({
-                'username': user_match.username,
-                'userId': user_match.id,
-                'loggedIn': True
-            })
-            return resp()
+            if user_match.active:
+                session.update({
+                    'username': user_match.username,
+                    'userId': user_match.id,
+                    'loggedIn': True
+                })
+                return 'dashboard.html'
+            else:
+                return resp(False, 'Please confirm your registration before logging in')
         else:
             return resp(False, 'Login credentials invalid')
-
     else:
         return resp(False, 'You must provide a username and password')
 
@@ -41,15 +42,17 @@ def register(args):
         If there are no matching usernames or emails,
         create a new User entry and send a verification email."""
 
-    existing_usernames = db.session.query(User)\
-                              .filter(User.username == args['username'])\
+    existing_matches = db.session.query(User)\
+                              .filter(db.or_(User.username == args['username'],
+                                             User.email == args['email']))\
                               .all()
-    if existing_usernames:
+
+    names_to_check = [u.username for u in existing_matches]
+    if args['username'] in names_to_check:
         return resp(False, 'Chosen Username already exists')
 
-    existing_emails = db.session.query(User)\
-                              .filter(User.email == args['email']).all()
-    if existing_emails:
+    emails_to_check = [u.email for u in existing_matches]
+    if args['email'] in emails_to_check:
         return resp(False, 'Given email already has an account. ' +
                            'Please sign in or recover your account information')
 
@@ -60,7 +63,7 @@ def register(args):
 
     new_user.insert()
 
-    verify_link = '{0}/external/verify?id={1}'.format(request.url_root, new_user.id)
+    verify_link = '{0}external/verify?id={1}'.format(request.url_root, new_user.id)
 
     subject = "Welocome to {0}!".format(CONFIG.get('app', 'name'))
 
@@ -78,6 +81,8 @@ def register(args):
                    text_body=msg)
 
     email.send()
+
+    return resp()
 
 
 def verify(args):

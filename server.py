@@ -13,7 +13,13 @@ app.debug = True
 
 @app.route("/")
 def index():
-    return render_template('index.html')
+    """ Directs logged in users to the dashboard
+        and others to the index. """
+
+    if session.get('loggedIn'):
+        return render_template('dashboard.html')
+    else:
+        return render_template('index.html')
 
 
 @app.route("/gateway")
