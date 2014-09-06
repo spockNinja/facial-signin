@@ -42,7 +42,12 @@ def gateway():
         if not method:
             raise UserWarning("No method named: " + req_method)
 
-        return json.dumps(method(req_json))
+        result = method(req_json)
+
+        if type(result) == dict:
+            return json.dumps(method(req_json))
+        else:
+            return result
 
     else:
         raise UserWarning("You must provide a file and method for the gateway")
