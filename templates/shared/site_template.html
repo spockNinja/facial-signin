@@ -33,11 +33,15 @@
             </div>
         </nav>
 
-        {% block content %}{% endblock %}
+        <div class="container" id="page_content">
+            {% block content %}{% endblock %}
+        </div>
 
         <script src="{{ url_for('static', filename='js/global/jquery.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/global/bootstrap.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/global/knockout.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/global/knockout.validation.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/global/bootbox.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/global/js-py-proto.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/global/app.js') }}"></script>
         {% block page_js %}{% endblock %}
