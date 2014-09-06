@@ -14,6 +14,8 @@ def init_db():
         DO NOT RUN ON LIVE DATA """
     db.Base.metadata.bind = db.engine
     db.Base.metadata.reflect()
+    db.Base.metadata.drop_all()
+    db.session.execute('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";')
     db.Base.metadata.create_all()
     db.session.commit()
     db.session.close()
