@@ -1,6 +1,6 @@
 import sys
 import os
-from flask import Flask, json, render_template, request, session
+from flask import Flask, json, render_template, request, Response, session
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
@@ -50,10 +50,14 @@ def gateway():
 
         result = method(req_json)
 
-        if type(result) == dict:
-            return json.dumps(method(req_json))
+        if type(result) in [list, dict]:
+            return Response(response=json.dumps(result),
+                            status=200,
+                            mimetype='application/json')
         else:
-            return result
+            return Response(response=result,
+                            status=200,
+                            mimetype='text/plain')
 
     else:
         raise UserWarning("You must provide a file and method for the gateway")
@@ -71,7 +75,9 @@ def external(method=None):
     results = method(request.args)
 
     if request.method == 'POST':
-        return json.dumps(results)
+        return Response(response=json.dumps(results),
+                        status=200,
+                        mimetype='application/json')
     else:
         return render_template(results)
 
