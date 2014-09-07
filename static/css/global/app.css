@@ -48,3 +48,8 @@ div[class*="spacer"] {
 .spacer100 {
   height: 100px;
 }
+/* Fixing Bootstrap form-feedback */
+.form-control-feedback {
+  top: auto;
+  bottom: 0px;
+}
