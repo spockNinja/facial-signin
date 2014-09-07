@@ -14,8 +14,12 @@ app.login = function() {
 
     self.registerUsername = ko.observable('');
     self.registerPassword = ko.observable('');
-    self.registerConfirmPassword = ko.observable('').extend({equal: self.registerPassword});
-    self.registerEmail = ko.observable('').extend({email: true});
+    self.registerConfirmPassword = ko.observable('').extend({
+        equal: { message: 'Passwords must match', params: self.registerPassword}
+    });
+    self.registerEmail = ko.observable('').extend({
+        email: {message: 'Please provide a real email address', params: true}
+    });
 
 
     self.readyToRegister = ko.computed( function() {
