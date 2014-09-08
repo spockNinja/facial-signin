@@ -6,6 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
 import db
 import external as external_methods
+from utils import CONFIG
 
 app = Flask(__name__)
 app.debug = True
@@ -17,9 +18,9 @@ def index():
         and others to the index. """
 
     if session.get('loggedIn'):
-        return render_template('dashboard.html')
+        return render_template('dashboard.html', CONFIG)
     else:
-        return render_template('index.html')
+        return render_template('index.html', CONFIG)
 
 
 @app.route("/gateway")
@@ -79,7 +80,7 @@ def external(method=None):
                         status=200,
                         mimetype='application/json')
     else:
-        return render_template(results)
+        return render_template(results, CONFIG)
 
 
 @app.teardown_appcontext
