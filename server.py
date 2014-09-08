@@ -9,6 +9,7 @@ import external as external_methods
 from utils import CONFIG
 
 app = Flask(__name__)
+app.secret_key = CONFIG.get('app', 'secret_key')
 app.debug = True
 
 
