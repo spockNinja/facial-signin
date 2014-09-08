@@ -6,12 +6,12 @@
 {% endblock %}
 
 {% block nav_extras %}
-    <form class="navbar-form navbar-right" role="login">
+    <form class="navbar-form navbar-right" role="login" data-bind="submit: login">
         <div class="form-group">
             <input type="text" class="form-control" placeholder="Username" data-bind="value: loginUsername">
             <input type="password" class="form-control" placeholder="Password" data-bind="value: loginPassword">
         </div>
-        <button type="button" class="btn btn-default" data-bind="click: login, enable: readyToLogin">Login</button>
+        <button type="submit" class="btn btn-default" data-bind="enable: readyToLogin">Login</button>
      </form>
 {% endblock %}
 
