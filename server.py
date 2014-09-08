@@ -18,9 +18,9 @@ def index():
         and others to the index. """
 
     if session.get('loggedIn'):
-        return render_template('dashboard.html', CONFIG)
+        return render_template('dashboard.html', cfg=CONFIG)
     else:
-        return render_template('index.html', CONFIG)
+        return render_template('index.html', cfg=CONFIG)
 
 
 @app.route("/gateway")
@@ -80,7 +80,7 @@ def external(method=None):
                         status=200,
                         mimetype='application/json')
     else:
-        return render_template(results, CONFIG)
+        return render_template(results, cfg=CONFIG)
 
 
 @app.teardown_appcontext
