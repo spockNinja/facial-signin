@@ -16,45 +16,57 @@ def login(args):
     username = args.get('username')
     password = args.get('password')
 
+    success = False
+    message = ''
+
     if username and password:
-        encrypted_pass = sha256_crypt.encrypt(password)
         user_match = db.session.query(User)\
-                               .filter(User.username == username)\
-                               .filter(User.password == encrypted_pass).first()
-        if user_match:
+                               .filter(User.username == username).first()
+        if user_match and sha256_crypt.verify(password, user_match.password):
             if user_match.active:
                 session.update({
                     'username': user_match.username,
                     'userId': user_match.id,
                     'loggedIn': True
                 })
-                return resp()
+                success = True
             else:
-                return resp(False, 'Please confirm your registration before logging in')
+                message = 'Please confirm your registration before logging in'
         else:
-            return resp(False, 'Login credentials invalid')
+            message = 'Login credentials invalid'
     else:
-        return resp(False, 'You must provide a username and password')
+        message = 'You must provide a username and password'
+
+    return resp(success, message)
 
 
 def register(args):
     """ Checks for existing accounts under the given username and email.
         If there are no matching usernames or emails,
         create a new User entry and send a verification email."""
+    username = args['username']
+    email = args['email']
+
+    success = True
+    message = ''
 
     existing_matches = db.session.query(User)\
-                              .filter(db.or_(User.username == args['username'],
-                                             User.email == args['email']))\
-                              .all()
+                                 .filter(db.or_(User.username == username,
+                                                User.email == email)).all()
 
     names_to_check = [u.username for u in existing_matches]
-    if args['username'] in names_to_check:
-        return resp(False, 'Chosen Username already exists')
+    if username in names_to_check:
+        success = False
+        message = 'Chosen Username already exists'
 
     emails_to_check = [u.email for u in existing_matches]
-    if args['email'] in emails_to_check:
-        return resp(False, 'Given email already has an account. ' +
-                           'Please sign in or recover your account information')
+    if email in emails_to_check:
+        success = False
+        message = ('Given email already has an account. ' +
+                   'Please sign in or recover your account information')
+
+    if not success:
+        return resp(success, message)
 
     new_user = User(username=args['username'],
                     email=args['email'],
@@ -63,11 +75,13 @@ def register(args):
 
     new_user.insert()
 
-    verify_link = '{0}external/verify?id={1}'.format(request.url_root, new_user.id)
+    site_url = CONFIG.get('app', 'url')
+
+    verify_link = '{0}external/verify?id={1}'.format(site_url, new_user.id)
 
     subject = "Welocome to {0}!".format(CONFIG.get('app', 'name'))
 
-    msg = '\n'.join([
+    email_msg = '\n'.join([
         'Welcome! Your account has been created!',
         'Please click the link below to verify your email address.',
         verify_link, '', '',
@@ -78,7 +92,7 @@ def register(args):
                    subject=subject,
                    sender=CONFIG.get('email', 'sender'),
                    to=new_user.email,
-                   text_body=msg)
+                   text_body=email_msg)
 
     email.send()
 
@@ -98,5 +112,11 @@ def verify(args):
         raise UserWarning("No user found matching ID")
 
     user.active = True
+
+    session.update({
+        'username': user.username,
+        'userId': user.id,
+        'loggedIn': True
+    })
 
     return 'dashboard.html'
