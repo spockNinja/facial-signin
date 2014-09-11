@@ -5,6 +5,7 @@
 from datetime import datetime
 from sqlalchemy import Column
 from sqlalchemy.dialects.postgresql import BOOLEAN, DATE, TEXT, UUID, VARCHAR
+from sqlalchemy.schema import ForeignKey
 
 from db import Base, MyBase
 
