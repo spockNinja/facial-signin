@@ -7,6 +7,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir, 'lib'))
 
 import db
+from models import *
 
 
 def init_db():
