@@ -48,6 +48,16 @@ class MyBase(object):
         session.add(self)
         return self.id
 
+    def to_dict(self):
+        '''
+        Convenience method to generate a dict from a model instance.
+        '''
+        return_dict = {}
+        for column in self.__table__.columns:
+            return_dict[column.name] = getattr(self, column.name)
+
+        return return_dict
+
 
 def safe_commit():
     """ This commit function will rollback the transaction if
