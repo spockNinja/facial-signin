@@ -31,7 +31,7 @@ app.login = function() {
         var loginUrl = '/external/login?username={loginUsername}&password={loginPassword}';
         $.post(loginUrl.format(ko.toJS(self)), function(response) {
             if (response.success) {
-                window.location.href = '/dashboard.html';
+                window.location.href = '/dashboard';
             }
             else {
                 bootbox.alert(response.message);

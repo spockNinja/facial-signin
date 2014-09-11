@@ -14,6 +14,7 @@ app.debug = True
 
 
 @app.route("/")
+@app.route("/dashboard")
 def index():
     """ Directs logged in users to the dashboard
         and others to the index. """
