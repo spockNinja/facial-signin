@@ -2,12 +2,12 @@
     that do not require any previous authentication. """
 
 import os
-from flask import request, session
+from flask import session
 from passlib.hash import sha256_crypt
 from postmark import PMMail
 
 import db
-from models.users import User
+from models import User
 from utils import CONFIG, resp
 
 

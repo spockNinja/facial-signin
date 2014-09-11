@@ -1,0 +1,26 @@
+"""
+    This file defines the db models.
+"""
+
+from datetime import datetime
+from sqlalchemy import Column
+from sqlalchemy.dialects.postgresql import BOOLEAN, DATE, TEXT, UUID, VARCHAR
+
+from db import Base, MyBase
+
+
+class User(MyBase, Base):
+    __tablename__ = 'users'
+    id = Column(UUID(), primary_key=True, nullable=False)
+    active = Column(BOOLEAN())
+    username = Column(VARCHAR(50), unique=True)
+    password = Column(TEXT())
+    email = Column(VARCHAR(256), unique=True)
+
+
+class Campaign(MyBase, Base):
+    __tablename__ = 'campaigns'
+    id = Column(UUID(), primary_key=True, nullable=False)
+    user_id = Column(UUID(), ForeignKey("users.id"), nullable=False)
+    name = Column(VARCHAR(50))
+    date_created = Column(DATE(), default=datetime.utcnow())
