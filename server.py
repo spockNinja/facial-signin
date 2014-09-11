@@ -8,7 +8,10 @@ import db
 import external as external_methods
 from utils import CONFIG
 
+from views import views
+
 app = Flask(__name__)
+app.register_blueprint(views)
 app.secret_key = CONFIG.get('app', 'secret_key')
 app.debug = True
 
