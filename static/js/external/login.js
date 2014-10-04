@@ -5,12 +5,12 @@
 app.index = function() {
     var self = {};
 
-    self.login = ko.validatedObservable({
+    self.loginForm = ko.validatedObservable({
         username: ko.observable('').extend({required: true}),
         password: ko.observable('').extend({required: true})
     });
 
-    self.register = ko.validatedObservable({
+    self.registerForm = ko.validatedObservable({
         username: ko.observable('').extend({
             required: true,
             exists: {
@@ -43,15 +43,15 @@ app.index = function() {
 
 
     self.readyToRegister = ko.computed( function() {
-        if (self.register().username.isValidating() || self.register().email.isValidating()) {
+        if (self.registerForm().username.isValidating() || self.registerForm().email.isValidating()) {
             return false;
         }
-        return self.register.isValid();
+        return self.registerForm.isValid();
     });
 
     self.login = function() {
         var loginUrl = '/external/login?username={username}&password={password}';
-        $.post(loginUrl.format(ko.toJS(self.login)), function(response) {
+        $.post(loginUrl.format(ko.toJS(self.loginForm)), function(response) {
             if (response.success) {
                 window.location.href = '/dashboard';
             }
@@ -63,7 +63,7 @@ app.index = function() {
 
     self.register = function() {
         var registerUrl = '/external/register?username={username}&password={password}&email={email}';
-        $.post(registerUrl.format(ko.toJS(self.register)), function(response) {
+        $.post(registerUrl.format(ko.toJS(self.registerForm)), function(response) {
             if (response.success) {
                 bootbox.alert("Thank you for registering. An email has been sent to you with a confirmation link inside.");
             }
