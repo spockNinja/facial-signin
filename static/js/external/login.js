@@ -24,9 +24,7 @@ app.index = function() {
             }
         }),
         password: ko.observable('').extend({required: true}),
-        confirmPassword: ko.observable('').extend({
-            equal: { message: 'Passwords must match', params: self.registerForm.password}
-        }),
+        confirmPassword: ko.observable(''),
         email: ko.observable('').extend({
             email: {message: 'Please provide a real email address', params: true},
             exists: {
@@ -41,6 +39,10 @@ app.index = function() {
         })
     });
 
+    // add the equal validator, since the reference didn't exist at creation
+    self.registerForm().confirmPassword.extend({
+        equal: { message: 'Passwords must match', params: self.registerForm().password}
+    });
 
     self.readyToRegister = ko.computed( function() {
         if (self.registerForm().username.isValidating() || self.registerForm().email.isValidating()) {
