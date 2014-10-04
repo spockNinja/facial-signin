@@ -13,29 +13,13 @@ app.index = function() {
     self.registerForm = ko.validatedObservable({
         username: ko.observable('').extend({
             required: true,
-            exists: {
-                async: true,
-                validator: function (val, params, callback) {
-                    var userCheckUrl = '/external/checkUsername?username='+val;
-                    $.post(userCheckUrl, function(response) {
-                        callback({isValid: response.success, message: response.message});
-                    });
-                }
-            }
+            checkExists: '/external/checkUsername?username='
         }),
         password: ko.observable('').extend({required: true}),
         confirmPassword: ko.observable(''),
         email: ko.observable('').extend({
             email: {message: 'Please provide a real email address', params: true},
-            exists: {
-                async: true,
-                validator: function (val, params, callback) {
-                    var emailCheckUrl = '/external/checkEmail?email='+val;
-                    $.post(emailCheckUrl, function(response) {
-                        callback({isValid: response.success, message: response.message});
-                    });
-                }
-            }
+            checkExists: '/external/checkEmail?email='
         })
     });
 
