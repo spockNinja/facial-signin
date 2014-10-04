@@ -41,33 +41,9 @@ def login(args):
 
 
 def register(args):
-    """ Checks for existing accounts under the given username and email.
-        If there are no matching usernames or emails,
-        create a new User entry and send a verification email."""
-    username = args['username']
-    email = args['email']
-
-    success = True
-    message = ''
-
-    existing_matches = db.session.query(User)\
-                                 .filter(db.or_(User.username == username,
-                                                User.email == email)).all()
-
-    names_to_check = [u.username for u in existing_matches]
-    if username in names_to_check:
-        success = False
-        message = 'Chosen Username already exists'
-
-    emails_to_check = [u.email for u in existing_matches]
-    if email in emails_to_check:
-        success = False
-        message = ('Given email already has an account. ' +
-                   'Please sign in or recover your account information')
-
-    if not success:
-        return resp(success, message)
-
+    """ Assumes that frontend validation for existing usernames/emails
+        is working and creates a new User entry.
+        We then send a verification email."""
     new_user = User(username=args['username'],
                     email=args['email'],
                     password=sha256_crypt.encrypt(args['password']),
@@ -79,7 +55,7 @@ def register(args):
 
     verify_link = '{0}external/verify?id={1}'.format(site_url, new_user.id)
 
-    subject = "Welocome to {0}!".format(CONFIG.get('app', 'name'))
+    subject = "Welcome to {0}!".format(CONFIG.get('app', 'name'))
 
     email_msg = '\n'.join([
         'Welcome! Your account has been created!',
@@ -97,6 +73,37 @@ def register(args):
     email.send()
 
     return resp()
+
+
+def checkUsername(args):
+    """ Checks for existing usernames for frontend validation."""
+    success = True
+    message = ''
+
+    existing_match = db.session.query(User)\
+                               .filter(User.username == args['username']).all()
+
+    if existing_match:
+        success = False
+        message = 'Username already in use.'
+
+    return resp(success, message)
+
+
+def checkEmail(args):
+    """ Checks for existing emails for frontend validation."""
+    success = True
+    message = ''
+
+    existing_match = db.session.query(User)\
+                               .filter(User.email == args['email']).all()
+
+    if existing_match:
+        success = False
+        message = ('Email already in use. ' +
+                   'Please sign in or recover your account information')
+
+    return resp(success, message)
 
 
 def verify(args):

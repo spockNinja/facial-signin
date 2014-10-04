@@ -7,6 +7,7 @@ from models import Campaign
 
 views = Blueprint('views', __name__)
 
+
 @views.route("/campaigns")
 def campaigns():
     """ Queries all of the logged in user's Campaigns
