@@ -1,10 +1,12 @@
-app.models.Campaign = function() {
+app.models.Model = function() {
+    // Shared logic for all JS models
+};
+
+app.models.Entity = function() {
     var self = this;
 
     self.id = ko.observable('');
     self.name = ko.observable('');
-    self.date_added = ko.observable('');
-
-    self.editingName = ko.observable(false);
+    self.dateCreated = ko.observable('');
 };
-app.models.Campaign.prototype = new app.models.Model();
+app.models.Entity.prototype = new app.models.Model();

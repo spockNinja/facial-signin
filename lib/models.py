@@ -19,8 +19,8 @@ class User(MyBase, Base):
     email = Column(VARCHAR(256), unique=True)
 
 
-class Campaign(MyBase, Base):
-    __tablename__ = 'campaigns'
+class Entity(MyBase, Base):
+    __tablename__ = 'entities'
     id = Column(UUID(), primary_key=True, nullable=False)
     user_id = Column(UUID(), ForeignKey("users.id"), nullable=False)
     name = Column(VARCHAR(50))

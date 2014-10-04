@@ -3,20 +3,17 @@
 from flask import Blueprint, render_template, session
 
 import db
-from models import Campaign
+from models import Entity
 
 views = Blueprint('views', __name__)
 
 
-@views.route("/campaigns")
-def campaigns():
+@views.route("/other")
+def other():
     """ Queries all of the logged in user's Campaigns
         and plugs them into the campaigns template """
-    _campaigns = []
-    user_campaigns = db.session.query(Campaign)\
-                               .filter(Campaign.user_id == session['userId'])
+    entities = db.session.query(Entity)
 
-    for c in user_campaigns:
-        _campaigns.append(c.to_dict())
+    entities = [e.to_dict() for e in entities]
 
-    return render_template('my/campaigns.html', campaigns=_campaigns)
+    return render_template('other.html', entities=entities)
