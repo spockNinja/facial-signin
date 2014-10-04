@@ -10,7 +10,7 @@
 
     <body>
         <script type="text/html" id="customValidationMessage">
-            <span class="form-control-feedback" data-bind="visible: field.error">
+            <span class="form-control-feedback" data-bind="visible: (field.error() && field.isModified())">
                 <i class="fa fa-exclamation-circle" data-bind="attr: { title: field.error }"></i>
             </span>
         </script>

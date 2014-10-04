@@ -25,7 +25,7 @@ app.index = function() {
         }),
         password: ko.observable('').extend({required: true}),
         confirmPassword: ko.observable('').extend({
-            equal: { message: 'Passwords must match', params: self.registerPassword}
+            equal: { message: 'Passwords must match', params: self.registerForm.password}
         }),
         email: ko.observable('').extend({
             email: {message: 'Please provide a real email address', params: true},
