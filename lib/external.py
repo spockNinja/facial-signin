@@ -2,7 +2,7 @@
     that do not require any previous authentication. """
 
 import os
-from flask import redirect, session
+from flask import session
 from passlib.hash import sha256_crypt
 from postmark import PMMail
 
@@ -134,4 +134,4 @@ def logout(args):
     session.pop('username', None)
     session.pop('userId', None)
     session.pop('loggedIn', None)
-    return redirect('/index.html')
+    return 'index.html'
