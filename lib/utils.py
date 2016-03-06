@@ -67,11 +67,6 @@ def log(logfile='log'):
     return log_wrap
 
 
-def resp(success=True, message=''):
-    """ Helper function to return a response dict"""
-    return {'success': success, 'message': message}
-
-
 def uuid():
     from uuid import uuid4
     return str(uuid4())

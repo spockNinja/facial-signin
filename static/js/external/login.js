@@ -13,13 +13,13 @@ app.index = function() {
     self.registerForm = ko.validatedObservable({
         username: ko.observable('').extend({
             required: true,
-            checkExists: '/external/checkUsername?username='
+            checkExists: '/checkUsername?username='
         }),
         password: ko.observable('').extend({required: true}),
         confirmPassword: ko.observable(''),
         email: ko.observable('').extend({
             email: {message: 'Please provide a real email address', params: true},
-            checkExists: '/external/checkEmail?email='
+            checkExists: '/checkEmail?email='
         })
     });
 
@@ -36,7 +36,7 @@ app.index = function() {
     });
 
     self.login = function() {
-        var loginUrl = '/external/login?username={username}&password={password}';
+        var loginUrl = '/login?username={username}&password={password}';
         $.post(loginUrl.format(ko.toJS(self.loginForm)), function(response) {
             if (response.success) {
                 window.location.href = '/dashboard';
@@ -48,7 +48,7 @@ app.index = function() {
     };
 
     self.register = function() {
-        var registerUrl = '/external/register?username={username}&password={password}&email={email}';
+        var registerUrl = '/register?username={username}&password={password}&email={email}';
         $.post(registerUrl.format(ko.toJS(self.registerForm)), function(response) {
             if (response.success) {
                 bootbox.alert("Thank you for registering. An email has been sent to you with a confirmation link inside.");
