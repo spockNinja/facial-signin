@@ -7,15 +7,17 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from utils import uuid
+from utils import CONFIG, uuid
 
-# Heroku gives us the db url in an ENV variable
-# Make sure you change the default to something secure before using it
-DB_URL = os.environ.get('DATABASE_URL')
-DRIVER = 'postgresql+psycopg2:'
+db_url = CONFIG.get('database', 'url')
+db_name = CONFIG.get('database', 'name')
+db_user = CONFIG.get('database', 'username')
+db_pass = CONFIG.get('database', 'password')
+connection_fmt = '://{username}:{password}@{url}/{name}'
+DRIVER = 'postgresql+psycopg2'
 
-db_url_parts = DB_URL.split(':', 1)
-FULL_DB_URL = DRIVER + db_url_parts[1]
+FULL_DB_URL = DRIVER + connection_fmt.format(username=db_user, password=db_pass,
+                                             url=db_url, name=db_name)
 
 engine = create_engine(FULL_DB_URL, convert_unicode=True,
                        isolation_level="SERIALIZABLE")
