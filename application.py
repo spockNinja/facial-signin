@@ -1,7 +1,8 @@
 import sys
 import os
-from flask import Flask, jsonify, render_template, request, session
-from mailshake import AmazonSESMailer
+from flask import (Flask, flash, jsonify, redirect,
+                   render_template, request, session)
+from oauth2client import client
 from passlib.hash import sha256_crypt
 from sqlalchemy import or_
 
@@ -9,7 +10,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
 import db
 from models import User
-from utils import CONFIG
+from utils import CONFIG, send_mail
 
 app = Flask(__name__)
 # TODO do this with api app.register_blueprint(api)
@@ -26,7 +27,8 @@ def index():
     if session.get('loggedIn'):
         return render_template('dashboard.html')
     else:
-        return render_template('index.html')
+        google_client_id = CONFIG.get('google', 'client_id')
+        return render_template('index.html', google_client_id=google_client_id)
 
 
 @app.route('/login', methods=['POST'])
@@ -55,6 +57,53 @@ def login():
             message = 'Login credentials invalid'
     else:
         message = 'You must provide a username and password'
+
+    return jsonify(success=success, message=message)
+
+
+@app.route('/googleLogin', methods=['POST'])
+def google_login():
+    """ Use the returned email from google to sign in.
+        If there is no matching account, create one and skip verification. """
+    email = request.args.get('email')
+    id_token = request.args.get('idToken')
+
+    success = False
+    message = ''
+
+    if email and id_token:
+        client_token = CONFIG.get('google', 'client_id')
+        id_info = client.verify_id_token(id_token, client_token)
+        user_id = id_info['sub']
+
+        user = db.session.query(User)\
+                         .filter(User.email == email).first()
+
+        if not user:
+            # Create an account with the google id
+            username = id_info.get('name', email)
+            user = User(username=username, email=email, active=True,
+                        google_id=user_id)
+            user.insert()
+
+        if user.google_id is None:
+            # This user made an account and is now using google login
+            user.google_id = user_id
+
+        issuers = ['accounts.google.com', 'https://accounts.google.com']
+        if id_info['iss'] not in issuers:
+            message = 'Auth token does not match google issuer'
+        elif user_id != user.google_id:
+            message = 'Google user ID does not match'
+        else:
+            session.update({
+                'username': user.username,
+                'userId': user.id,
+                'loggedIn': True
+            })
+            success = True
+    else:
+        message = 'Missing email or id token.'
 
     return jsonify(success=success, message=message)
 
@@ -102,12 +151,7 @@ def register():
         'Thank you for joining. We hope you enjoy your account.'
     ])
 
-    # TODO log it in dev, email in prod
-    #mailer = AmazonSESMailer()
-    #mailer.send(subject=subject, text_content=email_msg,
-    #            from_email=CONFIG.get('email', 'sender'),
-    #            to=[new_user.email])
-    print verify_link
+    send_mail(new_user.email, subject, email_msg)
 
     return jsonify(success=True,
                    message='Please check your email to verify your account.')
@@ -163,6 +207,7 @@ def verify():
         'loggedIn': True
     })
 
+    flash('Your account is now verified!', 'info')
     return render_template('dashboard.html')
 
 
@@ -172,7 +217,8 @@ def logout():
     session.pop('username', None)
     session.pop('userId', None)
     session.pop('loggedIn', None)
-    return render_template('index.html')
+    flash('You have sucessfully logged out.', 'info')
+    return redirect('/?logout=true')
 
 
 @app.context_processor

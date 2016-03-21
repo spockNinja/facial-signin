@@ -16,6 +16,7 @@ class User(MyBase, Base):
     active = Column(BOOLEAN())
     username = Column(VARCHAR(50), unique=True)
     password = Column(TEXT())
+    google_id = Column(VARCHAR(50))
     email = Column(VARCHAR(256), unique=True)
 
 

@@ -5,51 +5,61 @@
 app.index = function() {
     var self = {};
 
-    self.loginForm = {
-        username: ko.observable('').extend({required: true}),
-        password: ko.observable('').extend({required: true})
-    };
-
-    self.loginForm.ready = ko.pureComputed(function() {
-        return (self.loginForm.username.isValid() &&
-                self.loginForm.password.isValid());
+    self.needToRegister = ko.observable(false);
+    self.username = ko.observable().extend({
+        required: true,
+        checkExists: {params: '/checkUsername?username=', onlyIf: self.needToRegister}
     });
+    self.password = ko.observable().extend({required: true});
 
-    self.registerForm = {
-        username: ko.observable('').extend({
-            required: true,
-            checkExists: '/checkUsername?username='
-        }),
-        password: ko.observable('').extend({required: true}),
-        confirmPassword: ko.observable(''),
-        emailFocused: ko.observable(false)
-    };
+    self.confirmPassword = ko.observable().extend({
+        required: true,
+        equal: { message: 'Passwords must match', params: self.password}
+    });
 
     // To utilize the benefits of textInput but only validate after blur,
     // we have to combine it with hasFocus and onlyIf
-    self.registerForm.emailFocused = ko.observable(false);
-    var validAfterBlur = function() {
-        return !self.registerForm.emailFocused();
+    self.emailFocused = ko.observable(false);
+    var validateEmail = function() {
+        return !self.emailFocused();
     };
-    self.registerForm.email = ko.observable('').extend({
-        email: {message: 'Please provide a real email address', onlyIf: validAfterBlur},
-        checkExists: {params: '/checkEmail?email=', onlyIf: validAfterBlur}
+    self.email = ko.observable().extend({
+        required: true,
+        email: {message: 'Please provide a real email address', onlyIf: validateEmail},
+        checkExists: {params: '/checkEmail?email=', onlyIf: validateEmail}
     });
 
-    // add the equal validator, since the reference didn't exist at creation
-    self.registerForm.confirmPassword.extend({
-        equal: { message: 'Passwords must match', params: self.registerForm.password}
+    self.readyToLogin = ko.pureComputed(function() {
+        return (self.username.isValid() &&
+                self.password.isValid());
     });
 
     self.readyToRegister = ko.pureComputed(function() {
-        if (self.registerForm.username.isValidating() || self.registerForm.email.isValidating()) {
+        if (self.username.isValidating() || self.email.isValidating()) {
             return false;
         }
-        return ko.validatedObservable(self.registerForm).isValid();
+        return ko.validatedObservable({
+            username: self.username, email: self.email,
+            password: self.password, confirmPassword: self.confirmPassword
+
+        }).isValid();
     });
 
+    self.loginOrRegister = function() {
+        if (self.needToRegister()) {
+            self.register();
+        }
+        else {
+            self.login();
+        }
+    };
+
     self.login = function() {
-        var loginUrl = '/login?' + $.param(ko.toJS(self.loginForm));
+        var loginInfo = {
+            username: self.username(),
+            password: self.password()
+        };
+        var loginUrl = '/login?' + $.param(loginInfo);
         $.post(loginUrl, function(response) {
             if (response.success) {
                 window.location.href = '/dashboard';
@@ -62,9 +72,9 @@ app.index = function() {
 
     self.register = function() {
         var registerParams = {
-            username: self.registerForm.username(),
-            password: self.registerForm.password(),
-            email: self.registerForm.email()
+            username: self.username(),
+            password: self.password(),
+            email: self.email()
         };
         var registerUrl = '/register?' + $.param(registerParams);
         $.post(registerUrl, function(response) {
@@ -79,5 +89,30 @@ app.index = function() {
 
     return self;
 }();
+
+function googleLoginSuccess(user) {
+    if (window.location.search.indexOf('logout') !== -1) {
+        user.disconnect();
+    }
+    else {
+        var userProfile = user.getBasicProfile();
+        var userEmail = userProfile.getEmail();
+        var idToken = user.getAuthResponse().id_token;
+        var googleLoginUrl = '/googleLogin?' + $.param({email: userEmail, idToken: idToken});
+        $.post(googleLoginUrl, function(response) {
+            if (response.success) {
+                window.location.href = '/dashboard';
+            }
+            else {
+                bootbox.alert(response.message);
+            }
+        });
+    }
+}
+
+function googleLoginFailure(error) {
+    console.log(error);
+    bootbox.alert('Loggin in with google was unsuccessful. Please use the standard login form or try again later.');
+}
 
 ko.applyBindings(app.index, $('body')[0]);

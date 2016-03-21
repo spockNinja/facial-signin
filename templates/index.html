@@ -1,50 +1,57 @@
 {% extends "/shared/site_template.html" %}
 {% block title %}Index{% endblock %}
 
-{% block page_js %}
-    <script src="{{ url_for('static', filename='js/external/login.js') }}"></script>
+{% block page_css %}
+    <meta name="google-signin-client_id" content="{{ google_client_id }}">
 {% endblock %}
 
-{% block nav_extras %}
-    <form class="navbar-form navbar-right" role="login" data-bind="submit: login, with: loginForm">
-        <div class="form-group has-feedback">
-            <input type="text" class="form-control" placeholder="Username" data-bind="textInput: username">
-        </div>
-        <div class="form-group has-feedback">
-            <input type="password" class="form-control" placeholder="Password" data-bind="textInput: password">
-        </div>
-        <button type="submit" class="btn btn-default" data-bind="enable: ready">Login</button>
-     </form>
+{% block page_js %}
+    <script src="{{ url_for('static', filename='js/external/login.js') }}"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
 {% endblock %}
 
 {% block content %}
-    <div class="jumbotron">
+<div class="row">
+    <div class="col-lg-offset-4 col-md-offset-3 col-sm-offset-2 col-xs-offset-1 col-lg-4 col-md-6 col-sm-8 col-xs-10">
         <h1>Welcome!</h1>
-        <p>This is the template index! New? Register!</p>
-        <div class="row" data-bind="with: registerForm">
-            <div class="col-sm-6">
-                <div class="form-group has-feedback">
-                    <input type="text" class="form-control" placeholder="Username" data-bind="textInput: username">
-                </div>
+        <p>This is the template index! Log in or register!</p>
+        <form role="login" class="form-signin" data-bind="submit: loginOrRegister">
+            <div class="form-group has-feedback">
+                <label for="username" class="sr-only">Username</label>
+                <input type="text" id="username" class="form-control" placeholder="Username" data-bind="textInput: username">
             </div>
-            <div class="col-sm-6">
-                <div class="form-group has-feedback">
-                    <input type="email" class="form-control" placeholder="Email" data-bind="textInput: email, hasFocus: emailFocused">
-                </div>
+            <div class="form-group has-feedback">
+                <label for="password" class="sr-only">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="Password" data-bind="textInput: password">
             </div>
-            <div class="col-sm-6">
-                <div class="form-group has-feedback">
-                    <input type="password" class="form-control" placeholder="Password" data-bind="textInput: password">
-                </div>
+            <div class="form-group has-feedback" data-bind="visible: needToRegister">
+                <label for="confirmPassword" class="sr-only">Confirm Password</label>
+                <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm Password" data-bind="textInput: confirmPassword">
             </div>
-            <div class="col-sm-6">
-                <div class="form-group has-feedback">
-                    <input type="password" class="form-control" placeholder="Confirm Password" data-bind="textInput: confirmPassword">
-                </div>
+            <div class="form-group has-feedback" data-bind="visible: needToRegister">
+                <label for="email" class="sr-only">Email</label>
+                <input type="email" id="email" class="form-control" placeholder="Email" data-bind="textInput: email">
             </div>
-        </div>
-        <div class="row center">
-            <button type="button" class="btn btn-large btn-success" data-bind="click: register, enable: readyToRegister">Register</button>
-        </div>
+            <hr/>
+
+            <!-- ko if: needToRegister -->
+                <button type="submit" class="btn btn-lg btn-primary btn-block" data-bind="enable: readyToRegister">Register</button>
+            <!-- /ko -->
+            <!-- ko ifnot: needToRegister -->
+                <button type="submit" class="btn btn-lg btn-primary btn-block" data-bind="enable: readyToLogin">Login</button>
+            <!-- /ko -->
+
+            <span class="help-block center">OR</span>
+
+            <!-- TODO figure out how to center this damn thing -->
+            <div class="g-signin2 center-text" id="google-signin" data-longtitle="true" data-width="200"
+                 data-scope="email profile" data-onsuccess="googleLoginSuccess" data-onfailure="googleLoginFailure">
+            </div>
+
+            <hr/>
+            <a data-bind="toggle: needToRegister, text: needToRegister() ? 'Already have an account?' : 'Need a new account?'" class="clickable"></a>
+
+        </form>
     </div>
+</div>
 {% endblock %}
