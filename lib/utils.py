@@ -4,6 +4,7 @@
 
 import ConfigParser
 import os
+from mailshake import AmazonSESMailer
 
 ROOT = os.path.join(os.path.dirname(__file__), os.pardir)
 LOG_DIR = os.path.join(ROOT, 'logs')
@@ -65,6 +66,23 @@ def log(logfile='log'):
         return inner_log
 
     return log_wrap
+
+
+@log('email')
+def send_mail(to, subject, text, html=None):
+    ''' Utility to handle the Amazon SES mailer and configuration logic.
+        If mail isn't enabled, emails are logged instead. '''
+    if type(to) != list:
+        to = [to]
+
+    mail_access_key = CONFIG.get('email', 'access_key_id')
+    mail_access_secret = CONFIG.get('email', 'secret_access_key')
+    sender = CONFIG.get('email', 'sender')
+
+    if all([mail_access_key, mail_access_secret, sender]):
+        mailer = AmazonSESMailer(mail_access_key, mail_access_secret)
+        mailer.send(subject=subject, text=text, html=html,
+                    from_email=sender, to=to)
 
 
 def uuid():
