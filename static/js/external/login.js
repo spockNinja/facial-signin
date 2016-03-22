@@ -90,29 +90,4 @@ app.index = function() {
     return self;
 }();
 
-function googleLoginSuccess(user) {
-    if (window.location.search.indexOf('logout') !== -1) {
-        user.disconnect();
-    }
-    else {
-        var userProfile = user.getBasicProfile();
-        var userEmail = userProfile.getEmail();
-        var idToken = user.getAuthResponse().id_token;
-        var googleLoginUrl = '/googleLogin?' + $.param({email: userEmail, idToken: idToken});
-        $.post(googleLoginUrl, function(response) {
-            if (response.success) {
-                window.location.href = '/dashboard';
-            }
-            else {
-                bootbox.alert(response.message);
-            }
-        });
-    }
-}
-
-function googleLoginFailure(error) {
-    console.log(error);
-    bootbox.alert('Loggin in with google was unsuccessful. Please use the standard login form or try again later.');
-}
-
 ko.applyBindings(app.index, $('body')[0]);

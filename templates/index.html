@@ -7,7 +7,6 @@
 
 {% block page_js %}
     <script src="{{ url_for('static', filename='js/external/login.js') }}"></script>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
 {% endblock %}
 
 {% block content %}
@@ -40,13 +39,6 @@
             <!-- ko ifnot: needToRegister -->
                 <button type="submit" class="btn btn-lg btn-primary btn-block" data-bind="enable: readyToLogin">Login</button>
             <!-- /ko -->
-
-            <span class="help-block center">OR</span>
-
-            <!-- TODO figure out how to center this damn thing -->
-            <div class="g-signin2 center-text" id="google-signin" data-longtitle="true" data-width="200"
-                 data-scope="email profile" data-onsuccess="googleLoginSuccess" data-onfailure="googleLoginFailure">
-            </div>
 
             <hr/>
             <a data-bind="toggle: needToRegister, text: needToRegister() ? 'Already have an account?' : 'Need a new account?'" class="clickable"></a>

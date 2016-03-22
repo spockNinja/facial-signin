@@ -61,53 +61,6 @@ def login():
     return jsonify(success=success, message=message)
 
 
-@app.route('/googleLogin', methods=['POST'])
-def google_login():
-    """ Use the returned email from google to sign in.
-        If there is no matching account, create one and skip verification. """
-    email = request.args.get('email')
-    id_token = request.args.get('idToken')
-
-    success = False
-    message = ''
-
-    if email and id_token:
-        client_token = CONFIG.get('google', 'client_id')
-        id_info = client.verify_id_token(id_token, client_token)
-        user_id = id_info['sub']
-
-        user = db.session.query(User)\
-                         .filter(User.email == email).first()
-
-        if not user:
-            # Create an account with the google id
-            username = id_info.get('name', email)
-            user = User(username=username, email=email, active=True,
-                        google_id=user_id)
-            user.insert()
-
-        if user.google_id is None:
-            # This user made an account and is now using google login
-            user.google_id = user_id
-
-        issuers = ['accounts.google.com', 'https://accounts.google.com']
-        if id_info['iss'] not in issuers:
-            message = 'Auth token does not match google issuer'
-        elif user_id != user.google_id:
-            message = 'Google user ID does not match'
-        else:
-            session.update({
-                'username': user.username,
-                'userId': user.id,
-                'loggedIn': True
-            })
-            success = True
-    else:
-        message = 'Missing email or id token.'
-
-    return jsonify(success=success, message=message)
-
-
 @app.route('/register', methods=['POST'])
 def register():
     """ Registers a new user. """
