@@ -1,4 +1,6 @@
-py-web-template
+facial-signin
 ===============
 
-A template for web applications combining all of my favorite frameworks.
+A basic web app that demonstrates using facial recognition as an authentication method.
+
+This is a project for CSC 545 at Missouri State University.
