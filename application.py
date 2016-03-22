@@ -2,7 +2,6 @@ import sys
 import os
 from flask import (Flask, flash, jsonify, redirect,
                    render_template, request, session)
-from oauth2client import client
 from passlib.hash import sha256_crypt
 from sqlalchemy import or_
 
