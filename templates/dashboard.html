@@ -1,9 +1,17 @@
 {% extends "/shared/internal_template.html" %}
 {% block title %}Dashboard{% endblock %}
 
+{% block page_js %}
+    <script src="{{ url_for('static', filename='js/webcam.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
+
 {% block content %}
     <div class="jumbotron">
         <h1>Welcome!</h1>
-        <p>This is the dashboard. There will be helpful info and links here!</p>
+        <p>Add a photo!</p>
+        <div id="my_camera" style="width:320px; height:240px;"></div>
+        <div id="my_result"></div>
+        <a href="javascript:void(take_snapshot())">Take Snapshot</a>
     </div>
 {% endblock %}
