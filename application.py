@@ -1,4 +1,6 @@
+import base64
 import sys
+import tempfile
 import os
 from flask import (Flask, flash, jsonify, redirect,
                    render_template, request, session)
@@ -9,7 +11,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
 import db
 from models import User
-from utils import CONFIG, send_mail
+from utils import analyze_photo, CONFIG, send_mail
 
 app = Flask(__name__)
 # TODO do this with api app.register_blueprint(api)
@@ -171,6 +173,25 @@ def logout():
     session.pop('loggedIn', None)
     flash('You have sucessfully logged out.', 'info')
     return redirect('/?logout=true')
+
+
+@app.route('/analyzePhoto', methods=['POST'])
+def analyzePhoto():
+    """ Analyzes the photo and stores it on the user facial_analysis """
+    # Store the base64 data in a temp file
+    raw_data = request.stream.read()
+    b64_data = raw_data.replace('data:image/jpeg;base64,', '')
+    decoded = base64.b64decode(b64_data)
+
+    with tempfile.NamedTemporaryFile(suffix='.jpeg') as temp_file:
+        temp_file.write(decoded)
+
+        # Get the analysis from the utility function
+        analysis = analyze_photo(temp_file.name)
+
+    # TODO perhaps return a b64 representation of the image
+    # with the facial features on it for verification?
+    return jsonify(data=analysis, success=True)
 
 
 @app.context_processor

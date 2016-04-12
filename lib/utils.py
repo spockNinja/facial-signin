@@ -3,7 +3,9 @@
 """
 
 import ConfigParser
+import cv2
 import os
+import stasm
 from mailshake import AmazonSESMailer
 
 ROOT = os.path.join(os.path.dirname(__file__), os.pardir)
@@ -13,6 +15,21 @@ _loggers = {}
 
 CONFIG = ConfigParser.ConfigParser()
 CONFIG.read(os.path.join(ROOT, 'app.cfg'))
+
+
+def analyze_photo(photo_path):
+    """ Returns facial information about a photo. """
+    # Now have opencv read the tempfile into it's img array
+    cv_img = cv2.imread(photo_path)
+    gray_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
+
+    landmarks = stasm.search_single(gray_img)
+
+    # TODO
+    # * normalize points to account for differing facial distances
+    # * label landmarks
+    info = {'eye_distance': '', 'eye_width': '', 'nose_width': ''}  # ... etc
+    return info
 
 
 def create_log(log_name):
