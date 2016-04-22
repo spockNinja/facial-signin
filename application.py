@@ -28,8 +28,7 @@ def index():
     if session.get('loggedIn'):
         return render_template('dashboard.html')
     else:
-        google_client_id = CONFIG.get('google', 'client_id')
-        return render_template('index.html', google_client_id=google_client_id)
+        return render_template('index.html')
 
 
 @app.route('/login', methods=['POST'])

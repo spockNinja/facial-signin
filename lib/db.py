@@ -2,25 +2,19 @@
     This file controls all DB setup and session logic.
 """
 
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from utils import CONFIG, uuid
+from utils import uuid
 
-db_url = CONFIG.get('database', 'url')
-db_name = CONFIG.get('database', 'name')
-db_user = CONFIG.get('database', 'username')
-db_pass = CONFIG.get('database', 'password')
-connection_fmt = '://{username}:{password}@{url}/{name}'
-DRIVER = 'postgresql+psycopg2'
+DRIVER = 'sqlite+pysqlite:///'
+FULL_DB_URL = DRIVER + os.path.join(os.path.dirname(__file__),
+                                    os.pardir, 'users.db')
 
-FULL_DB_URL = DRIVER + connection_fmt.format(username=db_user, password=db_pass,
-                                             url=db_url, name=db_name)
-
-engine = create_engine(FULL_DB_URL, convert_unicode=True,
-                       isolation_level="SERIALIZABLE")
+engine = create_engine(FULL_DB_URL)
 session = scoped_session(sessionmaker(autocommit=False,
                                       autoflush=False,
                                       bind=engine))

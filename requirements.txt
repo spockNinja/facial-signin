@@ -19,7 +19,6 @@ passlib==1.6.5
 path.py==8.1.2
 pexpect==4.0.1
 pickleshare==0.6
-psycopg2==2.6.1
 ptyprocess==0.5.1
 pyasn1==0.1.9
 pyasn1-modules==0.0.8
