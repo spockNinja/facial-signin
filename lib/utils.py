@@ -7,7 +7,7 @@ import cv2
 import os
 import stasm
 from mailshake import AmazonSESMailer
-import faceInfo
+from faceInfo import FaceInfo
 
 ROOT = os.path.join(os.path.dirname(__file__), os.pardir)
 LOG_DIR = os.path.join(ROOT, 'logs')
@@ -25,8 +25,8 @@ def analyze_photo(photo_path):
     gray_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
 
     landmarks = stasm.search_single(gray_img)
-	face = FaceInfo()
-	face.generateInfoFromStasm(landmarks)
+    face = FaceInfo()
+    face.generateInfoFromStasm(landmarks)
     return face.getInfo()
 
 
