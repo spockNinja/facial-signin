@@ -13,14 +13,14 @@ import db
 from models import User
 from utils import analyze_photo, CONFIG, send_mail
 
-app = Flask(__name__)
+application = Flask(__name__)
 # TODO do this with api app.register_blueprint(api)
-app.secret_key = CONFIG.get('app', 'secret_key')
-app.debug = True
+application.secret_key = CONFIG.get('app', 'secret_key')
+application.debug = True
 
 
-@app.route("/")
-@app.route("/dashboard")
+@application.route("/")
+@application.route("/dashboard")
 def index():
     """ Directs logged in users to the dashboard
         and others to the index. """
@@ -31,7 +31,7 @@ def index():
         return render_template('index.html')
 
 
-@app.route('/login', methods=['POST'])
+@application.route('/login', methods=['POST'])
 def login():
     """ Confirm that a username and password match a User record in the db. """
     username = request.args.get('username')
@@ -61,7 +61,7 @@ def login():
     return jsonify(success=success, message=message)
 
 
-@app.route('/register', methods=['POST'])
+@application.route('/register', methods=['POST'])
 def register():
     """ Registers a new user. """
     username = request.args.get('username')
@@ -110,7 +110,7 @@ def register():
                    message='Please check your email to verify your account.')
 
 
-@app.route('/checkUsername', methods=['POST'])
+@application.route('/checkUsername', methods=['POST'])
 def checkUsername():
     """ Checks for existing usernames for frontend validation."""
 
@@ -124,7 +124,7 @@ def checkUsername():
     return jsonify(success=True)
 
 
-@app.route('/checkEmail', methods=['POST'])
+@application.route('/checkEmail', methods=['POST'])
 def checkEmail():
     """ Checks for existing emails for frontend validation."""
     email = request.args.get('email')
@@ -139,7 +139,7 @@ def checkEmail():
     return jsonify(success=True)
 
 
-@app.route('/verify')
+@application.route('/verify')
 def verify():
     """ Activates a user after they click the email link. """
     user_id = request.args.get('id')
@@ -164,7 +164,7 @@ def verify():
     return render_template('dashboard.html')
 
 
-@app.route('/logout')
+@application.route('/logout')
 def logout():
     """ Use the session to logout the user and redirect to index """
     session.pop('username', None)
@@ -174,7 +174,7 @@ def logout():
     return redirect('/?logout=true')
 
 
-@app.route('/analyzePhoto', methods=['POST'])
+@application.route('/analyzePhoto', methods=['POST'])
 def analyzePhoto():
     """ Analyzes the photo and stores it on the user facial_analysis """
     # Store the base64 data in a temp file
@@ -193,12 +193,12 @@ def analyzePhoto():
     return jsonify(data=analysis, success=True)
 
 
-@app.context_processor
+@application.context_processor
 def inject_globals():
     return dict(app_name=CONFIG.get('app', 'name'))
 
 
-@app.teardown_appcontext
+@application.teardown_appcontext
 def close_db_session(error):
     """ Make sure the database connection closes after each request"""
     db.safe_commit()
@@ -206,4 +206,4 @@ def close_db_session(error):
 
 
 if __name__ == "__main__":
-    app.run()
+    application.run()

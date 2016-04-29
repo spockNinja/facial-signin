@@ -10,7 +10,7 @@ from mailshake import AmazonSESMailer
 from faceInfo import FaceInfo
 
 ROOT = os.path.join(os.path.dirname(__file__), os.pardir)
-LOG_DIR = os.path.join(ROOT, 'logs')
+LOG_DIR = '/opt/python/log'
 
 _loggers = {}
 
@@ -42,7 +42,7 @@ def create_log(log_name):
     try:
         if not os.path.exists(logfile):
             open(logfile, 'w').close()
-            os.chmod(logfile, 0o664)
+            os.chmod(logfile, 0o666)
     except IOError:
         # We are passing here because if the file can't be written
         # we will log to stdout

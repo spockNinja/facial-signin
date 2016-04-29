@@ -34,3 +34,8 @@ coverage.xml
 
 # DB file for sqlite
 *.db
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
