@@ -7,14 +7,10 @@ This is a project for CSC 545 at Missouri State University.
 
 
 ## Roadmap
-* [ ] Once a user is logged in, they should be able to add a photo of themselves using a webcam.
-  * [ ] Need to hook up an S3 bucket to store photos.
-  * [ ] Naming convention: `[user.id]_base.ext`
-  * [ ] MediaDevices.getUserMedia() in the JS to get webcam instance and photo.
-* [ ] Analyze stored photo.
-  * [ ] Apply filters, find recognizable features.
-  * [ ] Store the analysis in a standardized JSON blob on the User.
-  * [ ] Possibly store filtered intermediate photos for comparison.
-* [ ] Once a user has uploaded a photo, require a match for logging in again.
-  * [ ] Sucessful username/password login should check for base analysis.
-  * [ ] Take a new photo, and compare it's analysis to the stored analysis.
+* [X] Once a user is logged in, they should be able to add a photo of themselves using a webcam.
+* [X] Analyze user photo, mapping points to facial features.
+* [ ] Send analysis mapped to user's face back to the user for confirmation.
+* [ ] Once the user verifies the face mapping, save it to the user db record.
+* [ ] Match photo to user using facialInfo.py:isSamePerson.
+  * [ ] Use ratio of face_width combined with the variance.
+* [ ] Once a user has verified a photo, require a match when they log in again.
