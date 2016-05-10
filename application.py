@@ -182,15 +182,11 @@ def logout():
 @application.route('/analyzePhoto', methods=['POST'])
 def analyzePhoto():
     """ Analyzes the photo and stores it on the user facial_analysis """
-    # Store the base64 data in a temp file
-    raw_data = request.stream.read()
-    b64_prefix = 'data:image/jpeg;base64,'
+    photo = request.files['webcam']
     jpg_suffix = '.jpeg'
-    b64_data = raw_data.replace(b64_prefix, '')
-    decoded = base64.b64decode(b64_data)
 
     with tempfile.NamedTemporaryFile(suffix=jpg_suffix) as temp_file:
-        temp_file.write(decoded)
+        photo.save(temp_file)
 
         cv_img = cv2.imread(temp_file.name)
 
