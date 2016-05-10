@@ -98,7 +98,7 @@ def register():
 
     site_url = CONFIG.get('app', 'url')
 
-    verify_link = '{0}/verify?id={1}'.format(site_url, new_user.id)
+    verify_link = 'https://{0}/verify?id={1}'.format(site_url, new_user.id)
 
     subject = "Welcome to {0}!".format(CONFIG.get('app', 'name'))
 
