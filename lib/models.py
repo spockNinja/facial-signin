@@ -3,14 +3,14 @@
 """
 
 from sqlalchemy import Column
-from sqlalchemy.dialects.sqlite import BOOLEAN, TEXT, VARCHAR
+from sqlalchemy.dialects.postgresql import BOOLEAN, TEXT, UUID, VARCHAR
 
 from db import Base, MyBase
 
 
 class User(MyBase, Base):
     __tablename__ = 'users'
-    id = Column(VARCHAR(36), primary_key=True, nullable=False)
+    id = Column(UUID(), primary_key=True, nullable=False)
     active = Column(BOOLEAN())
     username = Column(VARCHAR(50), unique=True)
     password = Column(TEXT())
