@@ -1,4 +1,7 @@
 import base64
+import cv2
+import simplejson as json
+import stasm
 import sys
 import tempfile
 import os
@@ -11,7 +14,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
 import db
 from models import User
-from utils import analyze_photo, CONFIG, send_mail
+from utils import CONFIG, send_mail
+from faceInfo import FaceInfo
+
 
 application = Flask(__name__)
 # TODO do this with api app.register_blueprint(api)
@@ -179,18 +184,47 @@ def analyzePhoto():
     """ Analyzes the photo and stores it on the user facial_analysis """
     # Store the base64 data in a temp file
     raw_data = request.stream.read()
-    b64_data = raw_data.replace('data:image/jpeg;base64,', '')
+    b64_prefix = 'data:image/jpeg;base64,'
+    jpg_suffix = '.jpeg'
+    b64_data = raw_data.replace(b64_prefix, '')
     decoded = base64.b64decode(b64_data)
 
-    with tempfile.NamedTemporaryFile(suffix='.jpeg') as temp_file:
+    with tempfile.NamedTemporaryFile(suffix=jpg_suffix) as temp_file:
         temp_file.write(decoded)
 
-        # Get the analysis from the utility function
-        analysis = analyze_photo(temp_file.name)
+        cv_img = cv2.imread(temp_file.name)
 
-    # TODO perhaps return a b64 representation of the image
-    # with the facial features on it for verification?
-    return jsonify(data=analysis, success=True)
+    gray_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
+
+    landmarks = stasm.search_single(gray_img)
+
+    if len(landmarks) == 0:
+        return jsonify(success=False, message="Face not found. Please try again.")
+
+    face = FaceInfo()
+    face.generateInfoFromStasm(landmarks)
+
+    landmarks = stasm.force_points_into_image(landmarks, gray_img)
+    for point in landmarks:
+        gray_img[round(point[1])][round(point[0])] = 255
+
+    comparison_photo = cv2.imencode(jpg_suffix, gray_img)[1]
+    b64_comparison_photo = base64.encodestring(comparison_photo)
+
+    return jsonify(data=face.getInfo(),
+                   img=b64_prefix + b64_comparison_photo,
+                   success=True)
+
+
+@application.route('/confirmPhoto', methods=['POST'])
+def confirmPhoto():
+    """ User has confirmed the photo identified facial features. Save it """
+    confirmed_data = request.get_json(force=True)
+    user_id = session['userId']
+    user = db.session.query(User).filter(User.id == user_id).first()
+    user.face_analysis = json.dumps(confirmed_data)
+
+    return jsonify(success=True, data=user.face_analysis)
 
 
 @application.context_processor

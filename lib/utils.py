@@ -18,18 +18,6 @@ CONFIG = ConfigParser.ConfigParser()
 CONFIG.read(os.path.join(ROOT, 'app.cfg'))
 
 
-def analyze_photo(photo_path):
-    """ Returns facial information about a photo. """
-    # Now have opencv read the tempfile into it's img array
-    cv_img = cv2.imread(photo_path)
-    gray_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
-
-    landmarks = stasm.search_single(gray_img)
-    face = FaceInfo()
-    face.generateInfoFromStasm(landmarks)
-    return face.getInfo()
-
-
 def create_log(log_name):
     """Returns a logger instance that writes to the passed log_name file.
 
