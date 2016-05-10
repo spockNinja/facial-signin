@@ -2,6 +2,37 @@ app = {
     models: {},
 };
 
+app.openCamera = function(callback) {
+    var messageHTML = [
+        '<div id="camera" class="center-block" style="width: 320; height: 240px;"></div>',
+        'For best results:<ul>',
+        '<li>Look straight at the camera</li>',
+        '<li>Center your face in the photo</li>',
+        '<li>Keep a neutral expression</li>',
+        '</ul>'
+    ].join('');
+    var messageElement = $(messageHTML);
+    var cameraDialog = bootbox.dialog({
+        title: 'Take a Photo',
+        message: messageElement,
+        buttons: {
+            'Take the photo!': {
+                className: 'btn-success',
+                callback: function() {
+                    Webcam.snap(callback);
+                }
+            },
+            'Cancel': {
+                className: 'btn-danger'
+            }
+        }
+    });
+
+    cameraDialog.on('shown.bs.modal', function() {
+        Webcam.attach('#camera');
+    });
+};
+
 ko.validation.init({
     decorateInputElement: true,
     errorAsTitle: false,

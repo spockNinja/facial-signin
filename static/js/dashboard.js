@@ -1,22 +1,36 @@
-Webcam.attach( '#my_camera' );
+app.Dashboard = (function() {
+    var dash = {};
 
-snapshot_uri = null;
-function take_snapshot() {
-    Webcam.snap( function(data_uri) {
-        snapshot_uri = data_uri;
-        document.getElementById('my_result').innerHTML = '<img src="'+data_uri+'"/>';
-    } );
-}
+    dash.faceData = ko.observable();
+    dash.comparisonPhoto = ko.observable();
 
-function upload_snapshot() {
-    if (snapshot_uri) {
-
-        $.post('/analyzePhoto', snapshot_uri, function(response) {
-            console.log(response);
-        }).fail(function _handleFailure(jqXHR, textStatus, errorThrown) {
-            document.open();
-            document.write(jqXHR.responseText);
-            document.close();
+    dash.takePhoto = function() {
+        app.openCamera(function(snapshotData) {
+            $.post('/analyzePhoto', snapshotData, function(response) {
+                if (response.success) {
+                    dash.faceData(response.data);
+                    dash.comparisonPhoto(response.img);
+                }
+                else {
+                    bootbox.alert(response.message);
+                }
+            });
         });
-    }
-}
+    };
+
+    dash.confirmPhoto = function() {
+        $.post('/confirmPhoto', JSON.stringify(dash.faceData()), function(response) {
+            if (!response.success) {
+                bootbox.alert(response.message);
+            }
+        });
+    };
+
+    dash.init = function() {
+        ko.applyBindings(dash, $('#dashboard-container')[0]);
+    };
+
+    return dash;
+})();
+
+app.Dashboard.init();
