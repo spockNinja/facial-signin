@@ -5,16 +5,8 @@ app.Dashboard = (function() {
     dash.comparisonPhoto = ko.observable();
 
     dash.takePhoto = function() {
-        app.openCamera(function(snapshotData) {
-            $.post('/analyzePhoto', snapshotData, function(response) {
-                if (response.success) {
-                    dash.faceData(response.data);
-                    //dash.comparisonPhoto(response.img);
-                }
-                else {
-                    bootbox.alert(response.message);
-                }
-            });
+        app.openCamera(function(rawResponse) {
+            console.log(rawResponse);
         });
     };
 

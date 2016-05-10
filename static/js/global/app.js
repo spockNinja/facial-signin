@@ -19,7 +19,11 @@ app.openCamera = function(callback) {
             'Take the photo!': {
                 className: 'btn-success',
                 callback: function() {
-                    Webcam.snap(callback);
+                    Webcam.snap(function(data_uri) {
+                        Webcam.upload(data_uri, '/analyzePhoto', function(code, text) {
+                            callback(text);
+                        } );
+                    });
                 }
             },
             'Cancel': {
