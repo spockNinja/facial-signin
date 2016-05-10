@@ -1,9 +1,8 @@
-import base64
 import cv2
+import numpy as np
 import simplejson as json
 import stasm
 import sys
-import tempfile
 import os
 from flask import (Flask, flash, jsonify, redirect,
                    render_template, request, session)
@@ -183,14 +182,10 @@ def logout():
 def analyzePhoto():
     """ Analyzes the photo and stores it on the user facial_analysis """
     photo = request.files['webcam']
-    jpg_suffix = '.jpeg'
+    # jpg_suffix = '.jpeg'
 
-    with tempfile.NamedTemporaryFile(suffix=jpg_suffix) as temp_file:
-        photo.save(temp_file)
-
-        cv_img = cv2.imread(temp_file.name)
-
-    gray_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
+    np_arr = np.fromstring(photo.read(), np.uint8)
+    gray_img = cv2.imdecode(np_arr, cv2.IMREAD_GRAYSCALE)
 
     landmarks = stasm.search_single(gray_img)
 
