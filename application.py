@@ -204,15 +204,15 @@ def analyzePhoto():
     face = FaceInfo()
     face.generateInfoFromStasm(landmarks)
 
-    landmarks = stasm.force_points_into_image(landmarks, gray_img)
-    for point in landmarks:
-        gray_img[round(point[1])][round(point[0])] = 255
+    #landmarks = stasm.force_points_into_image(landmarks, gray_img)
+    #for point in landmarks:
+    #    gray_img[round(point[1])][round(point[0])] = 255
 
-    comparison_photo = cv2.imencode(jpg_suffix, gray_img)[1]
-    b64_comparison_photo = base64.encodestring(comparison_photo)
+    #comparison_photo = cv2.imencode(jpg_suffix, gray_img)[1]
+    #b64_comparison_photo = base64.encodestring(comparison_photo)
 
     return jsonify(data=face.getInfo(),
-                   img=b64_prefix + b64_comparison_photo,
+                   #img=b64_prefix + b64_comparison_photo,
                    success=True)
 
 

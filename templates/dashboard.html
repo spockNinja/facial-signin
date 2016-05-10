@@ -14,9 +14,10 @@
             Add/Update your login photo
         </button>
 
-        <!-- ko if: comparisonPhoto -->
+        <!-- ko if: faceData -->
         <div class="thumbnail center-block">
-            <img data-bind="attr: {src: comparisonPhoto}">
+            <!-- <img data-bind="attr: {src: comparisonPhoto}"> -->
+            <p data-bind="text: faceData"></p>
             <div class="caption">
                 <h3>Review Match</h3>
                 <p>Please make sure we matched your features. If so, click "Confirm Photo"</p>

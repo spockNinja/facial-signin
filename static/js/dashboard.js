@@ -9,7 +9,7 @@ app.Dashboard = (function() {
             $.post('/analyzePhoto', snapshotData, function(response) {
                 if (response.success) {
                     dash.faceData(response.data);
-                    dash.comparisonPhoto(response.img);
+                    //dash.comparisonPhoto(response.img);
                 }
                 else {
                     bootbox.alert(response.message);
