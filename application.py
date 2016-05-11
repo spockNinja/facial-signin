@@ -177,7 +177,7 @@ def logout():
     session.pop('userId', None)
     session.pop('loggedIn', None)
     flash('You have sucessfully logged out.', 'info')
-    return redirect('/')
+    return redirect('https://' + CONFIG.get('app', 'url'))
 
 
 @application.route('/analyzePhoto', methods=['POST'])
