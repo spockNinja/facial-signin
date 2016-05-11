@@ -1,3 +1,4 @@
+import base64
 import cv2
 import numpy as np
 import simplejson as json
@@ -49,14 +50,17 @@ def login():
                                .filter(User.username == username).first()
         if user_match and sha256_crypt.verify(password, user_match.password):
             if user_match.active:
-                session.update({
-                    'username': user_match.username,
-                    'userId': user_match.id,
-                    'loggedIn': True
-                })
+                session['username'] = user_match.username,
+                session['userId'] = user_match.id,
+                session['loggedIn'] = True
                 success = True
             else:
                 message = 'Please confirm your registration before logging in'
+
+            if user_match.face_analysis is not None:
+                session['loggedIn'] = False
+                success = False
+                message = 'takePhoto'
         else:
             message = 'Login credentials invalid'
     else:
@@ -158,11 +162,9 @@ def verify():
 
     user.active = True
 
-    session.update({
-        'username': user.username,
-        'userId': user.id,
-        'loggedIn': True
-    })
+    session['username'] = user.username,
+    session['userId'] = user.id,
+    session['loggedIn'] = True
 
     flash('Your account is now verified!', 'info')
     return render_template('dashboard.html')
@@ -182,7 +184,6 @@ def logout():
 def analyzePhoto():
     """ Analyzes the photo and stores it on the user facial_analysis """
     photo = request.files['webcam']
-    # jpg_suffix = '.jpeg'
 
     np_arr = np.fromstring(photo.read(), np.uint8)
     gray_img = cv2.imdecode(np_arr, cv2.IMREAD_GRAYSCALE)
@@ -195,23 +196,44 @@ def analyzePhoto():
     face = FaceInfo()
     face.generateInfoFromStasm(landmarks)
 
-    #landmarks = stasm.force_points_into_image(landmarks, gray_img)
-    #for point in landmarks:
-    #    gray_img[round(point[1])][round(point[0])] = 255
+    landmarks = stasm.force_points_into_image(landmarks, gray_img)
+    for point in landmarks:
+        gray_img[round(point[1])][round(point[0])] = 255
 
-    #comparison_photo = cv2.imencode(jpg_suffix, gray_img)[1]
-    #b64_comparison_photo = base64.encodestring(comparison_photo)
+    comparison_photo = cv2.imencode('.jpeg', gray_img)[1]
+    b64_comparison_photo = base64.encodestring(comparison_photo)
 
     return jsonify(data=face.getInfo(),
-                   #img=b64_prefix + b64_comparison_photo,
+                   img='data:image/jpeg;base64,' + b64_comparison_photo,
                    success=True)
+
+
+@application.route('/compareFace', methods=['POST'])
+def compareFace():
+    """ Compares given face json to session user. """
+    face_data = request.get_json(force=True)
+
+    user_id = session['userId'][0]
+    user = db.session.query(User).filter(User.id == user_id).first()
+
+    known_face = FaceInfo()
+    known_face.generateInfoFromJson(user.face_analysis)
+
+    match_face = FaceInfo()
+    match_face._info = face_data
+
+    match = known_face.isSamePerson(match_face)
+
+    session['loggedIn'] = match
+
+    return jsonify(success=match)
 
 
 @application.route('/confirmPhoto', methods=['POST'])
 def confirmPhoto():
     """ User has confirmed the photo identified facial features. Save it """
     confirmed_data = request.get_json(force=True)
-    user_id = session['userId']
+    user_id = session['userId'][0]
     user = db.session.query(User).filter(User.id == user_id).first()
     user.face_analysis = json.dumps(confirmed_data)
 

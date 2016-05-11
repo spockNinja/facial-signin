@@ -21,7 +21,7 @@ app.openCamera = function(callback) {
                 callback: function() {
                     Webcam.snap(function(data_uri) {
                         Webcam.upload(data_uri, '/analyzePhoto', function(code, text) {
-                            callback(text);
+                            callback(JSON.parse(text));
                         } );
                     });
                 }
@@ -33,6 +33,12 @@ app.openCamera = function(callback) {
     });
 
     cameraDialog.on('shown.bs.modal', function() {
+        Webcam.set({
+            width: 320,
+            height: 240,
+            dest_width: 640,
+            dest_height: 480
+        });
         Webcam.attach('#camera');
     });
 };

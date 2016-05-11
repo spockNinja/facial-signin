@@ -64,11 +64,32 @@ app.index = function() {
             if (response.success) {
                 window.location.href = '/dashboard';
             }
+            else if (response.message === 'takePhoto') {
+                self.comparePhoto();
+            }
             else {
                 bootbox.alert(response.message);
             }
         });
     };
+
+    self.comparePhoto = function() {
+        app.openCamera(function(response) {
+            if (response.success) {
+                $.post('/compareFace', JSON.stringify(response.data), function(compareResp) {
+                    if (compareResp.success) {
+                        window.location.href = '/dashboard';
+                    }
+                    else {
+                        bootbox.alert("Face match failed! If it's really you, try again. If not, buzz of!");
+                    }
+                })
+            }
+            else {
+                bootbox.alert(response.message, self.comparePhoto);
+            }
+        })
+    }
 
     self.register = function() {
         var registerParams = {

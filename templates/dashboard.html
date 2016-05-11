@@ -8,22 +8,30 @@
 
 {% block content %}
     <div class="jumbotron" id="dashboard-container">
+        <!-- ko ifnot: comparisonPhoto -->
         <h1>Welcome!</h1>
         <p>You have successfully logged in!</p>
         <button class="btn btn-primary btn-lg" data-bind="click: takePhoto">
             Add/Update your login photo
         </button>
+        <!-- /ko -->
+        <div class="alert alert-success alert-dismissible" role="alert" data-bind="visible: successMessage">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <span data-bind="text: successMessage"></span>
+        </div>
 
-        <!-- ko if: faceData -->
+        <!-- ko if: comparisonPhoto -->
         <div class="thumbnail center-block">
-            <!-- <img data-bind="attr: {src: comparisonPhoto}"> -->
-            <p data-bind="text: faceData"></p>
+            <img data-bind="attr: {src: comparisonPhoto}">
             <div class="caption">
                 <h3>Review Match</h3>
                 <p>Please make sure we matched your features. If so, click "Confirm Photo"</p>
                 <p>
                     <button type="button" class="btn btn-success" data-bind="click: confirmPhoto">
                         Confirm Photo
+                    </button>
+                    <button type="button" class="btn btn-success" data-bind="click: takeAnother">
+                        Take Another
                     </button>
                 </p>
             </div>
