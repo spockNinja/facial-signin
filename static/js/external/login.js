@@ -81,7 +81,7 @@ app.index = function() {
                         window.location.href = '/dashboard';
                     }
                     else {
-                        bootbox.alert("Face match failed! If it's really you, try again. If not, buzz of!");
+                        bootbox.alert("Face match failed! If it's really you, try again. If not, buzz off!");
                     }
                 })
             }
